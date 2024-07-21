@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# AI
-=======
 # SAFETY HUB
 ## 서비스 소개
 #### "Building Bridges for Wokers Safety"
