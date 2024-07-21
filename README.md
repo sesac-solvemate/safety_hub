@@ -17,7 +17,7 @@ SAFETY HUB는 외국인 노동자들의 안전을 위한 교육 자료를 생성
 
 ### 시스템 아키텍쳐
 - 서비스 아키텍쳐
-![서비스 아키텍쳐](./images/architecture.png)
+![서비스 아키텍쳐](./images/architecture_1.png)
 
 - AI 모델 아키텍쳐
 ![AI 아키텍쳐](./images/ai_architecture.png)
