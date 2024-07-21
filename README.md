@@ -21,4 +21,3 @@ SAFETY HUB는 외국인 노동자들의 안전을 위한 교육 자료를 생성
 
 - AI 모델 아키텍쳐
 ![AI 아키텍쳐](./images/ai_architecture.png)
->>>>>>> db5dd9bcc0492e2859b1f735f9d5adfd7172ca22
