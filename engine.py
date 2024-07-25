@@ -38,5 +38,4 @@ def generator(x, model, tokenizer):
     result = tokenizer.decode(response, skip_special_tokens=True)
 
     return result
-
     

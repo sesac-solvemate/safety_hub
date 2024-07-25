@@ -70,4 +70,3 @@ def read_csv(path):
 
     return doc
 
-

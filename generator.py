@@ -38,3 +38,8 @@ print(result)
 
 
 ############## Korean -> Vietnamese ##############
+
+
+
+############## Korean -> Chinese ##############
+
