@@ -40,3 +40,11 @@ class GUIDE:
     LANGUAGE_CHEF="vi"
     IMAGE="images"
     DOWNLOAD_URL="downloadUrl"
+
+class COLLECTIONS:
+    RESOURCE="resources"
+    GUIDE="guide"
+    PROCESS="process"
+    EQUIP="equipment"
+    RISK="risk"
+    INDUSTRY="industry"
