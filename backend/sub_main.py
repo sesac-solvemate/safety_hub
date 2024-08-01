@@ -87,6 +87,9 @@ async def saveStepData(guideId, companyName: str=Form(...),
     #     return {"error": str(e)}
     return {"filename": companyFile.filename}#, "keys": list(df_dict.keys())}
 
+@app.get("/risk/")
+async def getRiskListByKeyword(keyword):
+    return []
 @app.post("/risk")
 async def createRiskData(riskName):
 

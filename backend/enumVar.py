@@ -12,6 +12,11 @@ class RESOURCE:
     COMPANY_FILE="companyFileUrl"
     TOPIC_TYPE="topicType"
     TOPIC_ID="topicId"
+    TOPIC_RISK="topicRisk"
+    TOPIC_NOTICE="topicNotice"
+    EMERGENCY_NOTICE="emergencyNotice"
+    EMERGENCY_CONTACT="emergencyContact"
+    COMPANY_MAP="map"
 
 class PROCESS:
     INDUSTRY_CODE="industryCode"
