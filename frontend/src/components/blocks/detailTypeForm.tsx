@@ -5,6 +5,7 @@ import axios from 'axios';
 const DetailTypeForm: React.FC = () => {
     const [riskFactors, setRiskFactors] = useState<string[]>([]);
     const [recommendedFactors, setRecommendedFactors] = useState<string[]>([]);
+    const [newRiskFactor, setNewRiskFactor] = useState('');
     const [additionalNotes, setAdditionalNotes] = useState('');
     const [emergencyEquipments, setEmergencyEquipments] = useState<string[]>([]);
     const [selectedEquipment, setSelectedEquipment] = useState('');
@@ -27,8 +28,11 @@ const DetailTypeForm: React.FC = () => {
             .catch(error => console.error(error));
     }, []);
 
-    const handleAddRiskFactor = (factor: string) => {
-        setRiskFactors([...riskFactors, factor]);
+    const handleAddRiskFactor = () => {
+        if (newRiskFactor.trim() !== '') {
+            setRiskFactors([...riskFactors, newRiskFactor]);
+            setNewRiskFactor(''); // Clear the input field
+        }
     };
 
     const handleRemoveRiskFactor = (index: number) => {
@@ -38,6 +42,10 @@ const DetailTypeForm: React.FC = () => {
     const handleAddEmergencyContact = () => {
         setEmergencyContacts([...emergencyContacts, newContact]);
         setNewContact({ name: '', phone: '', notes: '' });
+    };
+
+    const handleRemoveEmergencyContact = (index: number) => {
+        setEmergencyContacts(emergencyContacts.filter((_, i) => i !== index));
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,6 +59,7 @@ const DetailTypeForm: React.FC = () => {
             <Section>
                 <SectionTitle>위험요인</SectionTitle>
                 <Description>4-5개의 위험요인이 10분 안전자료에 적합합니다.</Description>
+                <Divider />
                 <RiskList>
                     {riskFactors.map((factor, index) => (
                         <RiskItem key={index}>
@@ -60,10 +69,16 @@ const DetailTypeForm: React.FC = () => {
                     ))}
                 </RiskList>
                 <AddRiskFactor>
-                    <input type="text" placeholder="위험요인 추가하기" />
-                    <AddButton onClick={() => handleAddRiskFactor("새로운 위험요인")}>+ 추가하기</AddButton>
+                    <AddRiskInput
+                        type="text"
+                        placeholder="위험요인 추가하기"
+                        value={newRiskFactor}
+                        onChange={(e) => setNewRiskFactor(e.target.value)}
+                    />
+                    <AddButton onClick={handleAddRiskFactor}>+ 추가하기</AddButton>
                 </AddRiskFactor>
                 <RecommendationTitle>추천 위험요인</RecommendationTitle>
+                <Divider />
                 <RecommendationList>
                     {recommendedFactors.map((factor, index) => (
                         <RecommendationItem key={index}>{factor}</RecommendationItem>
@@ -82,6 +97,7 @@ const DetailTypeForm: React.FC = () => {
 
             <Section>
                 <SectionTitle>비상상황시 필요 정보</SectionTitle>
+                <Divider />
                 <Select
                     value={selectedEquipment}
                     onChange={(e) => setSelectedEquipment(e.target.value)}
@@ -100,12 +116,14 @@ const DetailTypeForm: React.FC = () => {
 
             <Section>
                 <SectionTitle>비상연락망</SectionTitle>
+                <Divider />
                 <EmergencyContactList>
                     {emergencyContacts.map((contact, index) => (
                         <EmergencyContactItem key={index}>
                             <ContactInfo>{contact.name}</ContactInfo>
                             <ContactInfo>{contact.phone}</ContactInfo>
                             <ContactInfo>{contact.notes}</ContactInfo>
+                            <RemoveButton onClick={() => handleRemoveEmergencyContact(index)}>−</RemoveButton>
                         </EmergencyContactItem>
                     ))}
                 </EmergencyContactList>
@@ -128,7 +146,7 @@ const DetailTypeForm: React.FC = () => {
                         value={newContact.notes}
                         onChange={(e) => setNewContact({ ...newContact, notes: e.target.value })}
                     />
-                    <AddButton onClick={handleAddEmergencyContact}>+ 추가하기</AddButton>
+                    <AddButton onClick={handleAddEmergencyContact}>+</AddButton>
                 </EmergencyContactForm>
             </Section>
 
@@ -165,19 +183,23 @@ const Section = styled.div`
 const SectionTitle = styled.h2`
     font-size: 18px;
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+    text-align: left;
 `;
 
 const Description = styled.p`
     font-size: 14px;
     color: #757575;
+    margin-top: 0px;
     margin-bottom: 10px;
+    text-align: left;
 `;
 
 const RiskList = styled.ul`
     list-style: none;
     padding: 0;
     margin: 0;
+    font-family: NotoSansKR-Regular;
 `;
 
 const RiskItem = styled.li`
@@ -198,17 +220,31 @@ const AddRiskFactor = styled.div`
     display: flex;
     align-items: center;
     margin-top: 10px;
+    width: 100%;
+`;
+
+const AddRiskInput = styled.input`
+    flex-grow: 1;
+    height: 40px;
+    font-size: 16px;
+    padding: 8px;
+    font-family: NotoSansKR-Regular;
+    border: 1px solid #ddd;
+    border-radius: 4px;
 `;
 
 const AddButton = styled.button`
     background-color: #027b8b;
     color: #fff;
     padding: 10px;
-    font-size: 14px;
+    font-size: 10px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     margin-left: 10px;
+    height: 40px;
+    font-size: 16px;
+    font-family: NotoSansKR-Regular;
     &:hover {
         background-color: #025e6b;
     }
@@ -216,33 +252,42 @@ const AddButton = styled.button`
 
 const RecommendationTitle = styled.h3`
     font-size: 16px;
-    font-weight: bold;
-    margin-top: 20px;
+    font-family: NotoSansKR-SemiBold;
+    padding-top: 5px;
+    padding-left: 10px;
+    text-align: left;
+    margin-bottom: 3px;
 `;
 
 const RecommendationList = styled.ul`
     list-style: none;
     padding: 0;
     margin: 0;
+    text-align: left;
 `;
 
 const RecommendationItem = styled.li`
     margin-bottom: 10px;
     cursor: pointer;
+    text-align: left;
 `;
 
 const TextArea = styled.textarea`
     width: 100%;
-    padding: 10px;
-    font-size: 14px;
+    height: 40px;
+    padding: 8px;
+    font-size: 16px;
+    font-family: NotoSansKR-Regular;
     border: 1px solid #ddd;
     border-radius: 4px;
 `;
 
 const Select = styled.select`
     width: 100%;
-    padding: 10px;
-    font-size: 14px;
+    height: 40px;
+    padding: 8px;
+    font-size: 16px;
+    font-family: NotoSansKR-Regular;
     border: 1px solid #ddd;
     border-radius: 4px;
     margin-bottom: 10px;
@@ -252,6 +297,7 @@ const EmergencyContactList = styled.ul`
     list-style: none;
     padding: 0;
     margin: 0;
+    text-align: left;
 `;
 
 const EmergencyContactItem = styled.li`
@@ -259,6 +305,7 @@ const EmergencyContactItem = styled.li`
     justify-content: space-between;
     margin-bottom: 10px;
 `;
+
 
 const ContactInfo = styled.span`
     width: 30%;
@@ -285,4 +332,13 @@ const FileInput = styled.input`
     font-size: 14px;
     border: 1px solid #ddd;
     border-radius: 4px;
+`;
+
+const Divider = styled.hr`
+    width: 100%;
+    border: 0;
+    height: 1px;
+    background: #ddd;
+    margin-bottom: 10px;
+    padding: 0;
 `;

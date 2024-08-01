@@ -3,7 +3,7 @@ import React from 'react';
 import Sidebar from '../blocks/Sidebar';
 import styled from 'styled-components';
 import '../../assets/fonts/Font.css';
-import progressbar from '../../assets/images/progressbar2.svg'; 
+import progressbar from '../../assets/images/progressbar3.svg'; 
 import DetailForm from '../blocks/detailTypeForm';
 
 const FirstPage: React.FC = () => {
@@ -16,10 +16,10 @@ const FirstPage: React.FC = () => {
                 </ProgressBar>
                 <TextContainer>
                     <Title>
-                        <span style={{ color: "#399AF9" }}>어떤 교육자료</span>
-                        <span>를 원하시나요?</span><br />
+                        <span style={{ color: "#399AF9" }}>세부사항</span>
+                        <span>을 입력해주세요</span><br />
                     </Title>
-                    <Description>교육자료의 종류와 내용을 선택해주세요.</Description>
+                    <Description>위험요인 선택 및 추가 당부사항을 입력해주세요.</Description>
                 </TextContainer>
                 <FormContainer>
                     <DetailForm />
