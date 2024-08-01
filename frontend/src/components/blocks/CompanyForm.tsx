@@ -1,15 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import businessIcon from '../../assets/images/apartment.svg';
 import industryIcon from '../../assets/images/folder.svg';
 import reportIcon from '../../assets/images/content.svg';
+import industryData from '../../assets/industry.json'; // Ensure this path is correct
 
 interface Industry {
-    id: number;
+    code: number;
     name: string;
-    subcategories?: Industry[];
+    midCategory: MidCategory[];
+}
+
+interface MidCategory {
+    code: number;
+    name: string;
+    subCategory: SubCategory[];
+}
+
+interface SubCategory {
+    code: number;
+    name: string;
 }
 
 const CompanyForm: React.FC = () => {
@@ -18,17 +29,12 @@ const CompanyForm: React.FC = () => {
         industry: '',
         reportFile: null as File | null,
     });
-    const [industries, setIndustries] = useState<Industry[]>([]);
     const [selectedIndustry, setSelectedIndustry] = useState<Industry | null>(null);
-    const [selectedSubcategory, setSelectedSubcategory] = useState<Industry | null>(null);
+    const [selectedMidCategory, setSelectedMidCategory] = useState<MidCategory | null>(null);
+    const [selectedSubCategory, setSelectedSubCategory] = useState<SubCategory | null>(null);
     const [isIndustrySelectorOpen, setIsIndustrySelectorOpen] = useState(false);
-
-    useEffect(() => {
-        // 백엔드에서 업종 데이터를 받아오는 부분
-        axios.get('/api/industries') // 백엔드 API 엔드포인트
-            .then((response) => setIndustries(response.data))
-            .catch((error) => console.error(error));
-    }, []);
+    
+    const navigate = useNavigate();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, files } = e.target;
@@ -41,7 +47,6 @@ const CompanyForm: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // 폼 데이터 준비
         const submitData = new FormData();
         submitData.append('companyName', formData.companyName);
         submitData.append('industry', formData.industry);
@@ -49,24 +54,32 @@ const CompanyForm: React.FC = () => {
             submitData.append('reportFile', formData.reportFile);
         }
 
-        // 백엔드로 폼 데이터 전송
-        axios.post('/api/submit', submitData, {
-            headers: { 'Content-Type': 'multipart/form-data' },
-        }).then(() => {
-            // 완료 후 다음 페이지로 이동
-            navigate('/initForm');
-        });
+        // Here would be the axios call to the backend
+        // axios.post('/api/submit', submitData, { headers: { 'Content-Type': 'multipart/form-data' } })
+        //     .then(() => {
+        //         navigate('/firstForm');
+        //     });
+
+        // Simulate successful form submission and redirect
+        console.log('Form submitted:', Object.fromEntries(submitData.entries()));
+        navigate('/firstForm');
     };
 
     const handleIndustrySelection = (industry: Industry) => {
         setSelectedIndustry(industry);
-        setSelectedSubcategory(null); // Reset subcategory selection
+        setSelectedMidCategory(null);
+        setSelectedSubCategory(null);
     };
 
-    const handleSubcategorySelection = (subcategory: Industry) => {
-        setSelectedSubcategory(subcategory);
-        setFormData({ ...formData, industry: subcategory.name });
-        setIsIndustrySelectorOpen(false); // Close selector
+    const handleMidCategorySelection = (midCategory: MidCategory) => {
+        setSelectedMidCategory(midCategory);
+        setSelectedSubCategory(null);
+    };
+
+    const handleSubCategorySelection = (subCategory: SubCategory) => {
+        setSelectedSubCategory(subCategory);
+        setFormData({ ...formData, industry: subCategory.name });
+        setIsIndustrySelectorOpen(false);
     };
 
     const handleReset = () => {
@@ -76,10 +89,9 @@ const CompanyForm: React.FC = () => {
             reportFile: null,
         });
         setSelectedIndustry(null);
-        setSelectedSubcategory(null);
+        setSelectedMidCategory(null);
+        setSelectedSubCategory(null);
     };
-
-    const navigate = useNavigate();
 
     return (
         <FormContainer onSubmit={handleSubmit}>
@@ -116,28 +128,28 @@ const CompanyForm: React.FC = () => {
                     <IndustryList>
                         <CategoryColumn>
                             <CategoryTitle>대분류</CategoryTitle>
-                            {industries.map((industry) => (
-                                <IndustryOption key={industry.id} onClick={() => handleIndustrySelection(industry)}>
+                            {industryData.map((industry) => (
+                                <IndustryOption key={industry.code} onClick={() => handleIndustrySelection(industry)}>
                                     {industry.name}
                                 </IndustryOption>
                             ))}
                         </CategoryColumn>
-                        {selectedIndustry && selectedIndustry.subcategories && (
+                        {selectedIndustry && selectedIndustry.midCategory && (
                             <CategoryColumn>
                                 <CategoryTitle>중분류</CategoryTitle>
-                                {selectedIndustry.subcategories.map((subcategory) => (
-                                    <IndustryOption key={subcategory.id} onClick={() => handleSubcategorySelection(subcategory)}>
-                                        {subcategory.name}
+                                {selectedIndustry.midCategory.map((midCategory) => (
+                                    <IndustryOption key={midCategory.code} onClick={() => handleMidCategorySelection(midCategory)}>
+                                        {midCategory.name}
                                     </IndustryOption>
                                 ))}
                             </CategoryColumn>
                         )}
-                        {selectedSubcategory && selectedSubcategory.subcategories && (
+                        {selectedMidCategory && selectedMidCategory.subCategory && (
                             <CategoryColumn>
                                 <CategoryTitle>소분류</CategoryTitle>
-                                {selectedSubcategory.subcategories.map((subcategory) => (
-                                    <IndustryOption key={subcategory.id} onClick={() => handleSubcategorySelection(subcategory)}>
-                                        {subcategory.name}
+                                {selectedMidCategory.subCategory.map((subCategory) => (
+                                    <IndustryOption key={subCategory.code} onClick={() => handleSubCategorySelection(subCategory)}>
+                                        {subCategory.name}
                                     </IndustryOption>
                                 ))}
                             </CategoryColumn>
@@ -289,3 +301,4 @@ const SubmitButton = styled.button`
         background-color: #025e6b;
     }
 `;
+
