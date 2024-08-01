@@ -28,7 +28,7 @@ class EQUIP:
     INDUSTRY_CODE="industryCode"
     EQUIP_ID="id"
     EQUIP_NAME="name"
-    EQUIP="process"
+    EQUIP="equipment"
 
 class RISK:
     GUIDE_ID="guideId"
@@ -47,7 +47,7 @@ class GUIDE:
     DOWNLOAD_URL="downloadUrl"
 
 class COLLECTIONS:
-    RESOURCE="resources"
+    RESOURCE="resource"
     GUIDE="guide"
     PROCESS="process"
     EQUIP="equipment"

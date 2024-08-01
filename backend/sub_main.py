@@ -108,3 +108,13 @@ async def createRiskData(riskName):
 #     if language not in SUPPORT_LANGUAGE:
 #         pass
 #     return {}
+
+
+def pdfToText(pdfFile):
+    reader = PdfReader("example.pdf")
+    number_of_pages = len(reader.pages)
+    page = reader.pages[0]
+    text = page.extract_text()
+    # print(reader)
+    # print(page)
+    print(text)
