@@ -26,7 +26,7 @@ const MainPage: React.FC = () => {
         {
           title: '신규 교육자료',
           subtitle: '산업안전보건법의 신규작업 교육 기준을 준수하는 기업 맞춤형 자료를 제공합니다.',
-          content: ['신규', '사업장 특성 · 요구 반영', '다국어 지원'],
+          content: ['산업안전보건법 기준', '신규 작업자 대상', '사업장 특성 · 요구 반영', '다국어 지원'],
           buttonText: '제작하기',
           buttonLink: '../pages/FirstPage'
         },
@@ -39,6 +39,7 @@ const MainPage: React.FC = () => {
         }
     ];
   return (
+    <>
     <Container>
       <Sidebar />
       <Spacer />
@@ -55,18 +56,17 @@ const MainPage: React.FC = () => {
             <SubtitleSpan>AI기반 작업장 위험요인 추출</SubtitleSpan><br />
             <SubtitleSpan>다국어 지원</SubtitleSpan><br />
         </SubTitle>
-        <CardContainer>
-          {cardData.map((card, index) => (
-            <Card key={index} {...card} />
-          ))}
-        </CardContainer>
       </Content>
       <ImageBox>
           <img src={homeMan} alt="homeman" />
       </ImageBox>
-
-      
     </Container>
+    <CardContainer>
+      {cardData.map((card, index) => (
+        <Card key={index} {...card} />
+      ))}
+    </CardContainer>
+    </>
   );
 };
 
@@ -136,7 +136,16 @@ const ImageBox = styled.div`
 const CardContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 100%;
-  margin-top: 40px;
+  width: 918px;
+  height: 300px;
+  position: fixed;
+  bottom: 0;
+  left: 58%;
+  transform: translateX(-50%);
+  align-items: flex-end;
+  padding: 20px;
+  border-radius: 20px;
+  margin-bottom: 30px;
 `;
+
 

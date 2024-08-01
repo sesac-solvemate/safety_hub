@@ -92,4 +92,3 @@ const FormContainer = styled.div`
   border-radius: 20px;
   margin-bottom: 80px; 
 `;
-

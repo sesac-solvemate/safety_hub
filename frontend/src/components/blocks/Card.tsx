@@ -39,8 +39,9 @@ export default Card;
 
 const StyledCard = styled.div`
     width: 217px;
-    height: 391px;
+    height: 360px;
     padding: 32px;
+    margin: 5px;
     background-color: #fff;
     border: 1px solid #d9d9d9;
     border-radius: 8px;
@@ -79,7 +80,7 @@ const CardContent = styled.ul`
 `;
 
 const CardContentItem = styled.li`
-    font-size: 14px;
+    font-size: 12px;
     color: #757575;
     margin-bottom: 8px;
     display: flex;
