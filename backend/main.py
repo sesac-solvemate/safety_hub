@@ -374,11 +374,10 @@ def createSafetyGuide(guideId):
 
     # model 돌린 결과 출력
     # 상대 경로를 사용하여 파일 경로 구성
-    file_path = os.path.join(current_dir, '..', 'data', f'{COLLECTIONS.EQUIP}.json') #TODO -GUIDE
+    file_path = os.path.join(current_dir, '..', 'data', 'safety_rules_ko.json') #TODO -GUIDE
     print(file_path)
     with open(file_path, "r", encoding='utf-8') as f:
         data = json.load(f)
-        data=data[0] # TODO -지울 예정..
         db[COLLECTIONS.GUIDE].insert_one({
             "_id": guideId,
             "language":{
@@ -435,20 +434,67 @@ def createHtml(guideId, language=GUIDE.LANGUAGE_KOR):
         resource = db[COLLECTIONS.RESOURCE].find_one({"_id": guideId})
         data = db[COLLECTIONS.GUIDE].find_one({"_id": guideId})
         contents = data[GUIDE.LANGUAGE][language]
-        body = []
+        body =[]
         for title, content in contents.items():
-            pass
-            # 하나씩 템플릿에 넣는다
-        template = f"""<!DOCTYPE html>
-    <html lang="ko">
-    <head>
-        <meta charset="UTF-8">
-        <title>{resource[RESOURCE.COMPANY_NAME]} 안전 교육 자료</title>
-    </head>
-    <body>
-    
-    </body>
-    </html>"""
+            body.append(f"""
+            <section>
+        <h2 class="title">
+            <img src="https://via.placeholder.com/150" alt="logo" width="20px"/> {title}
+        </h2>
+        <hr>""")
+            for subTitle, text in content.items():
+                body.append(f"""
+                <div class="mini-block">
+            <h3>{subTitle}</h3>
+            <p>
+            {text}    
+            </p>
+        </div>
+                """)
+            body.append("</section>")
+
+
+        template = f"""
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{resource[RESOURCE.COMPANY_NAME]} 안전 교육 자료</title>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+body{{
+font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+}}
+
+section{{
+    display: block;
+    margin: 10px;
+    padding: 20px;
+    border-radius: 5px;
+}}
+.title{{
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}}
+
+.mini-block{{
+    display: block;
+    margin: 4px;
+    padding: 10px 0px;
+    /* border: 1px solid #ccc; */
+    border-radius: 5px;
+}}
+
+    </style>
+</head>
+<body>
+    {"".join(body)}
+</body>
+</html>
+    """
         file = open(f'{guideId}_{language}.html', 'w', encoding='UTF-8')
         file.write(template)
         file.close()
