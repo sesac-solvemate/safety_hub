@@ -1,0 +1,39 @@
+# 파일 규격 버전
+version: "3"
+# 이 항목 밑에 실행하려는 컨테이너 들을 정의
+services:
+  # 서비스 명
+  mongodb:
+    # 사용할 이미지
+    image: mongo
+    # 컨테이너 실행 시 재시작
+    restart: unless-stopped
+    # 컨테이너 이름 설정
+    container_name: safetyhub-mongo
+    # 접근 포트 설정 (컨테이너 외부:컨테이너 내부)
+    ports:
+      - "${MONGO_DB_PORT}:27017" #호스트:컨테이너
+    # -e 옵션
+    environment:
+      # MongoDB 계정 및 패스워드 설정 옵션
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_DB_ROOT_USER_NAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_DB_ROOT_USER_PASSWORD}
+
+  mongo-express:
+    image: mongo-express
+    container_name: safetyhub-mongo-express
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_DB_ROOT_USER_NAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_DB_ROOT_USER_PASSWORD}
+      ME_CONFIG_MONGODB_SERVER: safetyhub-mongo
+      ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_EXPRESS_USER_NAME}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_EXPRESS_USER_PASSWORD}
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: true
+
+networks:
+  default:
+    external: true
+    name: safetyhub_network
