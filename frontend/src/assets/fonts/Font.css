@@ -1,0 +1,133 @@
+
+@font-face {
+    font-family: "NotoSansKR-Black";
+    font-style: normal;
+    font-weight: 900;
+    src: url("./NotoSansKR-Black.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "NotoSansKR-Bold";
+    font-style: normal;
+    font-weight: 700;
+    src: url("./NotoSansKR-Bold.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "NotoSansKR-ExtraBold";
+    font-style: normal;
+    font-weight: 800;
+    src: url("./NotoSansKR-ExtraBold.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "NotoSansKR-ExtraLight";
+    font-style: normal;
+    font-weight: 200;
+    src: url("./NotoSansKR-ExtraLight.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "NotoSansKR-Light";
+    font-style: normal;
+    font-weight: 300;
+    src: url("./NotoSansKR-Light.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "NotoSansKR-Medium";
+    font-style: normal;
+    font-weight: 500;
+    src: url("./NotoSansKR-Medium.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "NotoSansKR-Regular";
+    font-style: normal;
+    font-weight: 400;
+    src: url("./NotoSansKR-Regular.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "NotoSansKR-SemiBold";
+    font-style: normal;
+    font-weight: 600;
+    src: url("./NotoSansKR-SemiBold.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "NotoSansKR-Thin";
+    font-style: normal;
+    font-weight: 100;
+    src: url("./NotoSansKR-Thin.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: 'Pretendard';
+    font-weight: 900;
+    font-display: swap;
+    src: local('Pretendard-Black'), url('./Pretendard-Black.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Pretendard';
+    font-weight: 800;
+    font-display: swap;
+    src: local('Pretendard-ExtraBold'), url('./Pretendard-ExtraBold.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Pretendard-Bold';
+    font-weight: 700;
+    font-display: swap;
+    src: local('Pretendard-Bold'), url('./Pretendard-Bold.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Pretendard-SemiBold';
+    font-weight: 600;
+    font-display: swap;
+    src: local('Pretendard-SemiBold'), url('./Pretendard-SemiBold.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Pretendard';
+    font-weight: 500;
+    font-display: swap;
+    src: local('Pretendard-Medium'), url('./Pretendard-Medium.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Pretendard';
+    font-weight: 400;
+    font-display: swap;
+    src: local('Pretendard-Regular'), url('./Pretendard-Regular.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Pretendard-Light';
+    font-weight: 300;
+    font-display: swap;
+    src: local('Pretendard-Light'), url('./Pretendard-Light.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Pretendard';
+    font-weight: 200;
+    font-display: swap;
+    src: local('Pretendard-ExtraLight'), url('./Pretendard-ExtraLight.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Pretendard';
+    font-weight: 100;
+    font-display: swap;
+    src: local('Pretendard-Thin'), url('./Pretendard-Thin.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'MontserratAlternates';
+    font-weight: 600;
+    font-display: swap;
+    src: local('MontserratAlternates-SemiBold'), url('./MontserratAlternates-SemiBold.ttf') format('truetype');
+}
