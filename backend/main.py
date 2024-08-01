@@ -20,7 +20,8 @@ from datetime import datetime
 import json
 
 from enumVar import PROCESS, RISK, EQUIP, RESOURCE, GUIDE, INDUSTRY, COLLECTIONS
-
+import boto3
+from botocore.exceptions import NoCredentialsError,ClientError
 # load .env
 load_dotenv()
 app = FastAPI()
@@ -34,10 +35,55 @@ print(MONGO_USER, MONGO_PASSWORD, MONGO_HOST, MONGO_PORT)
 client = pymongo.MongoClient(
     f"mongodb://{MONGO_USER}:{MONGO_PASSWORD}@{MONGO_HOST}:{MONGO_PORT}/safetyhub?authSource=admin&retryWrites=true&w=majority")
 db = client["safetyhub"]
-collection = db["timestamps"]
 print(db)
-print(collection)
 
+s3=boto3.client("s3",
+    aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
+    aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY')
+)
+BUCKET=os.environ.get("AWS_BUCKET_NAME")
+def check_object_exists(object_name):
+    s3 = boto3.client('s3')
+    try:
+        s3.head_object(Bucket=BUCKET, Key=object_name)
+        return True
+    except ClientError as e:
+        if e.response['Error']['Code'] == '404':
+            return False
+        else:
+            raise
+    except NoCredentialsError:
+        print("Credentials not available")
+        return False
+# 파일 업로드 함수
+def upload_to_s3(file_name, object_name=None):
+    if object_name is None:
+        object_name = file_name
+
+    try:
+        s3.upload_file(file_name, BUCKET, object_name)
+        print(f"File {file_name} uploaded to {BUCKET}/{object_name}")
+    except FileNotFoundError:
+        print(f"The file {file_name} was not found")
+    except NoCredentialsError:
+        print("Credentials not available")
+
+# 파일 다운로드 함수
+def download_from_s3(object_name, file_name=None):
+    if file_name is None:
+        file_name = object_name
+
+    try:
+        s3.download_file(BUCKET, object_name, file_name)
+        print(f"File {file_name} downloaded from {BUCKET}/{object_name}")
+    except FileNotFoundError:
+        print(f"The file {file_name} was not found")
+    except NoCredentialsError:
+        print("Credentials not available")
+
+
+print("checkS3")
+print(check_object_exists("diagram.pptx"))
 
 @app.get("/upload/{databaseName}")
 async def upload_json_to_database(databaseName):
@@ -369,6 +415,8 @@ def createHtml(guideId, language=GUIDE.LANGUAGE_KOR):
         file.write(template)
         file.close()
         # s3에도 저장
+        upload_to_s3(f'{guideId}_{language}.html', f'{guideId}/{language}.html')
+
         return  # 저장한 링크~
     except:
         # throw error
@@ -382,6 +430,7 @@ def htmlToPdf(guideId, htmlFileUrl, language=GUIDE.LANGUAGE_KOR):
     converter.convert(htmlFileUrl, f'{guideId}_{language}.pdf')
     # converter.convert('https://pypi.org', 'sample.pdf')
     # s3에 저장
+    upload_to_s3(f'{guideId}_{language}.pdf',f'{guideId}/{language}.pdf')
 
 
 def pdfToText(pdfFile):
