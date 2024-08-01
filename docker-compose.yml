@@ -12,12 +12,14 @@ services:
     container_name: safetyhub-mongo
     # 접근 포트 설정 (컨테이너 외부:컨테이너 내부)
     ports:
-      - "27017:27017"
+      - "28017:27017" #호스트:컨테이너
     # -e 옵션
     environment:
       # MongoDB 계정 및 패스워드 설정 옵션
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_DB_ROOT_USER_NAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_DB_ROOT_USER_PASSWORD}
+    volumes:
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
 
   mongo-express:
     image: mongo-express
@@ -31,3 +33,9 @@ services:
       ME_CONFIG_MONGODB_SERVER: safetyhub-mongo
       ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_EXPRESS_USER_NAME}
       ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_EXPRESS_USER_PASSWORD}
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: true
+
+networks:
+  default:
+    external: true
+    name: safetyhub_network
