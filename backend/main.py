@@ -358,8 +358,13 @@ async def getEquipmentList(guideId):
 async def getRiskList(guideId):
     data=db[COLLECTIONS.RESOURCE].find_one({"_id":guideId},{"_id":0,RESOURCE.TOPIC_ID:1})
     processId=data[RESOURCE.TOPIC_ID]
-    riskData=db[COLLECTIONS.RISK].find_one({RISK.PROCESS_ID:processId},{"_id":0,RISK.RISK:1,RISK.OWN_RISK:1})
-    return riskData
+    riskData=db[COLLECTIONS.RISK].find_one({RISK.PROCESS_ID:processId},{"_id":0,RISK.RISK:1})
+    ownRiskData=db[COLLECTIONS.RISK].find_one({"guideId":guideId},{"_id":0,RISK.RISK:1})
+    print(len(riskData[RISK.RISK]),len(ownRiskData[RISK.RISK]))
+    return {
+        RISK.RISK:riskData[RISK.RISK],
+        RISK.OWN_RISK:ownRiskData[RISK.RISK]
+    }
 
 
 @app.get("/risk/{guideId}/choice")
@@ -374,7 +379,7 @@ def createSafetyGuide(guideId):
 
     # model 돌린 결과 출력
     # 상대 경로를 사용하여 파일 경로 구성
-    file_path = os.path.join(current_dir, '..', 'data', 'safety_rules_ko.json') #TODO -GUIDE
+    file_path = os.path.join(current_dir, '..', 'data', 'safety_rules_ko.json')
     print(file_path)
     with open(file_path, "r", encoding='utf-8') as f:
         data = json.load(f)
@@ -403,14 +408,14 @@ async def getSafetyGuideWithLanguage(guideId, language="ko"):
         pass
     # if s3에 있으면 챙겨오기
     filename=f"{guideId}/{language}.html"
-    if check_object_exists(filename):
-        url=f"{S3_URL}{filename}"
-        return url
+    # if check_object_exists(filename):
+    #     url=f"{S3_URL}{filename}"
+    #     return url
     data=db[COLLECTIONS.GUIDE].find_one({
         "_id": guideId
     })
-    if language not in data[GUIDE.LANGUAGE]:
-        pass
+    if language not in data[GUIDE.LANGUAGE] or not data:
+        return {"err":"exist"}
     createHtml(guideId, language)
     return f"{S3_URL}{filename}"
 
@@ -434,27 +439,67 @@ def createHtml(guideId, language=GUIDE.LANGUAGE_KOR):
         resource = db[COLLECTIONS.RESOURCE].find_one({"_id": guideId})
         data = db[COLLECTIONS.GUIDE].find_one({"_id": guideId})
         contents = data[GUIDE.LANGUAGE][language]
-        body =[]
-        for title, content in contents.items():
-            body.append(f"""
-            <section>
-        <h2 class="title">
-            <img src="https://via.placeholder.com/150" alt="logo" width="20px"/> {title}
-        </h2>
-        <hr>""")
-            for subTitle, text in content.items():
-                body.append(f"""
-                <div class="mini-block">
-            <h3>{subTitle}</h3>
-            <p>
-            {text}    
-            </p>
-        </div>
-                """)
-            body.append("</section>")
+        # print(contents)
+        body =[" "]*4
+        # print(body)
+        titles=list(contents.keys())
+        # print(titles, titles[0])
+        # print(contents[titles[0]])
 
+        tmp=[]
+        for subTitle, text in contents[titles[0]].items():
+            # print(subTitle,text)
+            tmp.append(f'''
+            <div class="mini-block">
+        <h3>{subTitle}</h3>
+        <p>
+        {text}
+        </p>
+    </div>''')
+        body[0]="".join(tmp)
+        #2
+        tmp = []
+        for i,(subTitle, text) in enumerate(contents[titles[2]].items()):
+            tmp.append(f'''
+                    <div class="mini-block">
+                <h3>{subTitle}</h3>
+                <p>
+                {text}
+                </p>
+            </div>
+            {f"<img src={S3_URL}/map.jpg width=300px>" if i==0 else ""}
+            ''')
+        body[2]="".join(tmp)
+        #3
+        tmp=[]
+        for subTitle, text in contents[titles[3]].items():
+            tmp.append(f'''
+            <div class="mini-block">
+        <h3>{subTitle}</h3>
+        <p>
+        {text}
+        </p>
+    </div>''')
+        body[3] = "".join(tmp)
+        #1
+        tmp = []
+        for subTitle, subContent in contents[titles[1]].items():
+            tmp.append(f'''
+                    <div class="mini-block">
+                <h3>{subTitle}</h3>
+                ''')
+            for miniTitle, text in subContent:
+                tmp.append(f'''<p>
+                <h4>{miniTitle}</h4>
+                {text}
+                </p>
+                ''')
+            tmp.append("</div>")
+        body[1] = "".join(tmp)
 
-        template = f"""
+        print("==",body)
+
+        template = f'''
     <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -491,10 +536,18 @@ section{{
     </style>
 </head>
 <body>
-    {"".join(body)}
+    <section>
+        <h2 class="title">
+            <img src="https://via.placeholder.com/150" alt="logo" width="20px"/> {titles[0]}
+        </h2>
+        <hr>{
+        "".join(body)
+        }          
+            </section>
 </body>
 </html>
-    """
+    '''
+        print(template)
         file = open(f'{guideId}_{language}.html', 'w', encoding='UTF-8')
         file.write(template)
         file.close()
