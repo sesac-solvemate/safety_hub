@@ -2,13 +2,24 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
+import processJson from '../../assets/process.json'; // Ensure this path is correct
+
+interface Process {
+    id: number;
+    name: string;
+}
+
+interface CompanyProcess {
+    id: string;
+    name: string;
+}
 
 const MaterialTypeForm: React.FC = () => {
     const [selection, setSelection] = useState<string | null>(null);
-    const [keywords, setKeywords] = useState<string[]>([]);
+    const [keywords, setKeywords] = useState<(Process | CompanyProcess)[]>([]);
     const [loading, setLoading] = useState(false);
     const [showMore, setShowMore] = useState(false);
-    const [selectedKeyword, setSelectedKeyword] = useState<string | null>(null);
+    const [selectedKeyword, setSelectedKeyword] = useState<Process | CompanyProcess | null>(null);
     const { guideId } = useParams<{ guideId: string }>();
     const navigate = useNavigate();
 
@@ -16,15 +27,9 @@ const MaterialTypeForm: React.FC = () => {
         if (selection) {
             setLoading(true);
             setTimeout(() => {
-                axios.get(`/api/${selection}-keywords`)
-                    .then(response => {
-                        setKeywords(response.data);
-                        setLoading(false);
-                    })
-                    .catch(error => {
-                        console.error(error);
-                        setLoading(false);
-                    });
+                const selectedKeywords = selection === 'work-process' ? processJson.process : processJson.companyProcess;
+                setKeywords(selectedKeywords);
+                setLoading(false);
             }, 2000); // Ensure at least 2 seconds of loading
         }
     }, [selection]);
@@ -34,20 +39,22 @@ const MaterialTypeForm: React.FC = () => {
         setSelectedKeyword(null);
     };
 
-    const handleKeywordClick = (keyword: string) => {
+    const handleKeywordClick = (keyword: Process | CompanyProcess) => {
         setSelectedKeyword(keyword);
     };
 
     const handleNextClick = () => {
         if (selectedKeyword) {
-            // Send selected keyword to the backend
-            axios.post(`/api/guide/${guideId}/select-keyword`, { keyword: selectedKeyword })
+            axios.post(`/step/${guideId}/2`, { process: selectedKeyword.name, processId: selectedKeyword.id })
                 .then(response => {
-                    navigate(`/guide/${guideId}/next-step`); // Navigate to the next step
+                    navigate('/SecondForm'); // Navigate to SecondForm on success
                 })
                 .catch(error => {
                     console.error(error);
+                    navigate('/SecondForm'); // Navigate to SecondForm on failure
                 });
+        } else {
+            navigate('/SecondForm'); // Navigate to SecondForm if no keyword is selected
         }
     };
 
@@ -84,9 +91,9 @@ const MaterialTypeForm: React.FC = () => {
                                     <KeywordButton
                                         key={index}
                                         onClick={() => handleKeywordClick(keyword)}
-                                        selected={selectedKeyword === keyword}
+                                        selected={selectedKeyword?.name === keyword.name}
                                     >
-                                        {keyword}
+                                        {keyword.name}
                                     </KeywordButton>
                                 ))}
                             </KeywordContainer>
