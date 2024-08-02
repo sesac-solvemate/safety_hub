@@ -21,10 +21,24 @@ import json
 from enumVar import PROCESS, RISK, EQUIP, RESOURCE, GUIDE, INDUSTRY, COLLECTIONS
 import boto3
 from botocore.exceptions import NoCredentialsError,ClientError
+from fastapi.middleware.cors import CORSMiddleware
 # load .env
 load_dotenv()
 app = FastAPI()
+# CORS 설정
+origins = [
+    "http://localhost",
+    "http://localhost:3000",
+    "http://example.com",  # 필요에 따라 허용할 도메인을 추가
+]
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # 허용할 도메인 목록
+    allow_credentials=True,
+    allow_methods=["*"],  # 허용할 HTTP 메서드 (예: GET, POST 등)
+    allow_headers=["*"],  # 허용할 HTTP 헤더
+)
 # MongoDB 설정
 MONGO_USER = os.environ.get('MONGO_DB_ROOT_USER_NAME')
 MONGO_PASSWORD = os.environ.get('MONGO_DB_ROOT_USER_PASSWORD')
@@ -84,9 +98,6 @@ def download_from_s3(object_name, file_name=None):
     except NoCredentialsError:
         print("Credentials not available")
 
-
-# print("checkS3")
-# print(check_object_exists("diagram.pptx"))
 
 @app.get("/upload/{databaseName}")
 async def upload_json_to_database(databaseName):
