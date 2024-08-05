@@ -25,4 +25,3 @@ for label in label_list:
     translator(label, 'Thai') 
 
 print('The End : Translation Mode')
-
