@@ -10,7 +10,7 @@
 - Retreiver : 'bge (ko-rereanker)'
   
 ### 프로세스 도식화
-image/process.png
+![프로세스 도식화](./image/process.png)
 
 ## 코드 실행
 
@@ -18,6 +18,6 @@ image/process.png
 
 ## 생성 결과
 ### 한국어 ver
-image/result_korean.png
+![한국어 생성 결과](./image/result_korean.png)
 ### 영어 ver
-image/result_english.png
+![영어 생성 결과](./image/result_english.png)
